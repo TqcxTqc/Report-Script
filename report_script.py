@@ -75,11 +75,11 @@ def get_dict_by_line(line):
             exit(f"Faulure to search by regex {regex} in {value}")
 
     regex_ip = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-    regex_type_req = r"OPTIONS|GET|HEAD|POST|PUT|PATCH|DELETE|TRACE"
-    regex_duration = r'\"\s\d{3}\s(\d+)\s'
+    regex_type_req = r"OPTIONS|GET|Head|POST|PUT|PATCH|DELETE|TRACE|HEAD|T"
+    regex_duration = r'\s"?([^"]*)?"?$'
     regex_url = r'\".+\s(.+)\sHTTP'
     regex_time = r'\[(.+)\]'
-    regex_status = r'\"\s(\d{3})\s\d+\s'
+    regex_status = r'\"\s(\d{3}|-)'
 
     dictionary = dict()
 
@@ -170,11 +170,11 @@ for log in get_path_logs(dirlog, filelog):
     top_server_error_lines = get_common_error(dict_lines, 500, 599)
 
     REPORT[COUNT_REQUEST_KEY_REPORT] = REPORT[COUNT_REQUEST_KEY_REPORT] + count_request
-    REPORT[COUNT_BY_TYPE_REQUEST_KEY_REPORT] = REPORT[COUNT_BY_TYPE_REQUEST_KEY_REPORT] | count_type_of_requests
-    REPORT[TOP_IP_KEY_REPORT] = REPORT[TOP_IP_KEY_REPORT] | top_ips
+    REPORT[COUNT_BY_TYPE_REQUEST_KEY_REPORT] = count_type_of_requests
+    REPORT[TOP_IP_KEY_REPORT] = top_ips
     REPORT[TOP_LONGEST_REQUEST_KEY_REPORT] = most_common_record_by_duration(duration_lines)
-    REPORT[TOP_CLIENT_ERROR_KEY_REPORT] = REPORT[TOP_CLIENT_ERROR_KEY_REPORT] | top_client_error_lines
-    REPORT[TOP_SERVER_ERROR_KEY_REPORT] = REPORT[TOP_SERVER_ERROR_KEY_REPORT] | top_server_error_lines
+    REPORT[TOP_CLIENT_ERROR_KEY_REPORT] = top_client_error_lines
+    REPORT[TOP_SERVER_ERROR_KEY_REPORT] = top_server_error_lines
 
 with open('report.json', 'w') as fp:
     json.dump(REPORT, fp, indent=3)
